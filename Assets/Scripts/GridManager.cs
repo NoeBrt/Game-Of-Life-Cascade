@@ -16,8 +16,8 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     float deltaT = 0.2f;
 
-    bool isPause = true;
-    List<GameObject> CellHistory = new List<GameObject>();
+    public bool isPause = true;
+   public List<GameObject> CellHistory = new List<GameObject>();
 
     public Cell[,] Cells { get; set; }
 
@@ -35,7 +35,7 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 GameObject newCell = Instantiate(cellPrefab,
-                new Vector3(x + cellPrefab.transform.localScale.x / 2 - width / 2+0.025f, y + cellPrefab.transform.localScale.y / 2 - height / 2+0.025f, 0),
+                new Vector3(x + cellPrefab.transform.localScale.x / 2 - width / 2 + 0.025f, y + cellPrefab.transform.localScale.y / 2 - height / 2 + 0.025f, 0),
                 Quaternion.identity);
                 Cell cell = newCell.GetComponent<Cell>();
                 cell.position = new int[2] { x, y };
@@ -71,16 +71,16 @@ public class GridManager : MonoBehaviour
         {
             if (!isPause)
             {
-               for (int i=0;i<CellHistory.Count;i++) 
+                for (int i = 0; i < CellHistory.Count; i++)
+                {
+                    GameObject cell = CellHistory[i];
+                    cell.transform.position = cell.transform.position - new Vector3(0, 0, cell.transform.localScale.z);
+                    if (cell.transform.position.z < -55)
                     {
-                       GameObject cell=CellHistory[i];
-                        cell.transform.position = cell.transform.position - new Vector3(0, 0,cell.transform.localScale.z );
-                        if (cell.transform.position.z < -55)
-                        {
-                            CellHistory.Remove(cell);
-                            Destroy(cell);
-                        }
+                        CellHistory.Remove(cell);
+                        Destroy(cell);
                     }
+                }
                 for (int x = 0; x < width; x++)
                 {
                     for (int y = 0; y < height; y++)
@@ -88,9 +88,9 @@ public class GridManager : MonoBehaviour
                         Cells[x, y].UpdateCells();
                         if (Cells[x, y].state == StateEnum.ALIVE)
                         {
-                        GameObject previousCell = Instantiate(cubePrefab, Cells[x, y].transform.position - new Vector3(0, 0,0.5f), Quaternion.identity);
-                        previousCell.SetActive(isHistoryActive);
-                        CellHistory.Add(previousCell);
+                            if (isHistoryActive){
+                            GameObject previousCell = Instantiate(cubePrefab, Cells[x, y].transform.position - new Vector3(0, 0, 0.5f), Quaternion.identity);
+                            CellHistory.Add(previousCell);}
                         }
 
                     }
@@ -115,16 +115,26 @@ public class GridManager : MonoBehaviour
         {
             isPause = !isPause;
         }
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            isHistoryActive=!isHistoryActive;
-            
+            isHistoryActive = !isHistoryActive;
+
         }
         if (Input.GetKeyDown(KeyCode.G))
         {
-            gridMesh.SetActive(!gridMesh.activeSelf);          
-           
+            gridMesh.SetActive(!gridMesh.activeSelf);
+
         }
+        if(!Camera.main.GetComponent<CameraController>().isProfile && !Camera.main.GetComponent<CameraController>().startTransition )
+        {
+            CellHistory.ForEach(cell => cell.SetActive(false));
+        }
+        if (!Camera.main.GetComponent<CameraController>().isProfile && Camera.main.GetComponent<CameraController>().startTransition)
+        {
+            CellHistory.ForEach(cell => cell.SetActive(isHistoryActive));
+        }
+
+
     }
 
 }

@@ -16,8 +16,8 @@ public class CameraController : MonoBehaviour
     private Vector3 faceAngleRotation = new Vector3(0, 180, 0);
     private Vector3 profilePosition = new Vector3(-46.1500015f, -38.4599991f, 42.6300011f);
     private Vector3 facePosition = new Vector3(0, 0, 100);
-
-    private bool isProfile = false;
+    public bool isProfile = true;
+    public bool startTransition = false;
 
     private void Awake()
     {
@@ -56,80 +56,84 @@ public class CameraController : MonoBehaviour
     {
         Vector3 targetPosition = isProfile ? facePosition : profilePosition;
         Vector3 targetRotation = isProfile ? faceAngleRotation : profileAngleRotation;
-        isProfile = !isProfile; // Toggle the flag
 
         // Calculate the duration of the transition based on the transition speed
         float duration = 1f / transitionSpeed;
         float time = 0;
+        GridManager.instance.isPause = true;
 
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
         Quaternion endRotation = Quaternion.Euler(targetRotation);
-
+        startTransition=true;
         while (time < duration)
         {
-            // Incrementally interpolate the position and rotation from the start to the end over time
-            transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
-            transform.rotation = Quaternion.Lerp(startRotation, endRotation, time / duration);
-            time += Time.deltaTime;
-            yield return null; // Wait for the next frame
+            // decrease the opacity of the cellshistory
+                transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+                transform.rotation = Quaternion.Lerp(startRotation, endRotation, time / duration);
+                time += Time.deltaTime;
+                yield return null; // Wait for the next frame
+            }
+            startTransition=false;
+            // Ensure the target position and rotation are exactly applied after the interpolation
+            transform.position = targetPosition;
+            transform.rotation = endRotation;
+            isProfile = !isProfile; // Toggle the flag
+            GridManager.instance.isPause = false;
+
+
         }
 
-        // Ensure the target position and rotation are exactly applied after the interpolation
-        transform.position = targetPosition;
-        transform.rotation = endRotation;
-    }
 
-
-    void MoveCamera()
-    {
-        Vector3 difference = _dragOrigin - _camera.ScreenToWorldPoint(Input.mousePosition);
-
-        // Apply the movement to the camera
-        transform.position += difference;
-
-        // Update the drag origin for the next frame, to make the movement continuous
-        _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
-    }
-    void ZoomCamera(float scrollInput)
-    {
-        // Get the current size of the camera
-        float currentSize = _camera.orthographicSize;
-
-        // Calculate the new size after zooming
-        float newSize = Mathf.Clamp(currentSize - scrollInput * zoomSpeed, minSize, maxSize);
-
-        if (Mathf.Abs(newSize - currentSize) > Mathf.Epsilon)
+        void MoveCamera()
         {
-            // Calculate how much we will zoom
-            float zoomFactor = currentSize / newSize;
+            Vector3 difference = _dragOrigin - _camera.ScreenToWorldPoint(Input.mousePosition);
 
-            // Calculate the world position of the mouse before zooming
-            Vector3 worldBeforeZoom = ScreenToWorldPoint(Input.mousePosition, currentSize);
+            // Apply the movement to the camera
+            transform.position += difference;
 
-            // Set the new size to the camera
-            _camera.orthographicSize = newSize;
-
-            // Calculate the world position of the mouse after zooming
-            Vector3 worldAfterZoom = ScreenToWorldPoint(Input.mousePosition, newSize);
-
-            // Move the camera by the difference in world positions caused by zooming
-            Vector3 cameraPositionAdjustment = worldBeforeZoom - worldAfterZoom;
-            transform.position += cameraPositionAdjustment;
+            // Update the drag origin for the next frame, to make the movement continuous
+            _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
         }
+        void ZoomCamera(float scrollInput)
+        {
+            // Get the current size of the camera
+            float currentSize = _camera.orthographicSize;
+
+            // Calculate the new size after zooming
+            float newSize = Mathf.Clamp(currentSize - scrollInput * zoomSpeed, minSize, maxSize);
+
+            if (Mathf.Abs(newSize - currentSize) > Mathf.Epsilon)
+            {
+                // Calculate how much we will zoom
+                float zoomFactor = currentSize / newSize;
+
+                // Calculate the world position of the mouse before zooming
+                Vector3 worldBeforeZoom = ScreenToWorldPoint(Input.mousePosition, currentSize);
+
+                // Set the new size to the camera
+                _camera.orthographicSize = newSize;
+
+                // Calculate the world position of the mouse after zooming
+                Vector3 worldAfterZoom = ScreenToWorldPoint(Input.mousePosition, newSize);
+
+                // Move the camera by the difference in world positions caused by zooming
+                Vector3 cameraPositionAdjustment = worldBeforeZoom - worldAfterZoom;
+                transform.position += cameraPositionAdjustment;
+            }
+        }
+
+        // Converts screen point to world point at a given z distance from the camera
+        private Vector3 ScreenToWorldPoint(Vector3 screenPoint, float zDistance)
+        {
+            // Adjust the screen point to account for the distance from the camera
+            screenPoint.z = zDistance - _camera.transform.position.z;
+            return _camera.ScreenToWorldPoint(screenPoint);
+        }
+
+        // Your existing ScreenToWorldPoint method...
+
+
+
+
     }
-
-    // Converts screen point to world point at a given z distance from the camera
-    private Vector3 ScreenToWorldPoint(Vector3 screenPoint, float zDistance)
-    {
-        // Adjust the screen point to account for the distance from the camera
-        screenPoint.z = zDistance - _camera.transform.position.z;
-        return _camera.ScreenToWorldPoint(screenPoint);
-    }
-
-    // Your existing ScreenToWorldPoint method...
-
-
-
-
-}
