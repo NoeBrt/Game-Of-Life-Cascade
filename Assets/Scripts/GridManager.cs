@@ -6,47 +6,58 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager instance;
     [SerializeField]
-   public  int width = 10;
+    public int width = 10;
     [SerializeField]
-   public int height = 10;
+    public int height = 10;
 
     [SerializeField]
     GameObject cellPrefab;
 
     [SerializeField]
     float deltaT = 0.2f;
-    
-    bool isPause=false;
 
-   public Cell[,] Cells {get; set;}
+    bool isPause = true;
+    List<GameObject> CellHistory = new List<GameObject>();
 
-    
+    public Cell[,] Cells { get; set; }
 
+    public GameObject cubePrefab;
 
-    void initGrid(){
-        Cells=  new Cell[width,height];
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
-                GameObject newCell = Instantiate(cellPrefab, new Vector3(x + cellPrefab.transform.localScale.x / 2 - width / 2, y + cellPrefab.transform.localScale.y / 2 - height / 2,0), Quaternion.identity);
+    bool isHistoryActive = false;
+
+    void initGrid()
+    {
+        Cells = new Cell[width, height];
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                GameObject newCell = Instantiate(cellPrefab,
+                new Vector3(x + cellPrefab.transform.localScale.x / 2 - width / 2+0.025f, y + cellPrefab.transform.localScale.y / 2 - height / 2+0.025f, 0),
+                Quaternion.identity);
                 Cell cell = newCell.GetComponent<Cell>();
-                cell.position = new int[2]{x,y};
-                Cells[x,y] = cell;
+                cell.position = new int[2] { x, y };
+                Cells[x, y] = cell;
             }
         }
     }
     void Start()
     {
 
-    initGrid();
-    StartCoroutine(UpdateCellsCoroutine());
+        initGrid();
+        StartCoroutine(UpdateCellsCoroutine());
     }
 
-    
 
-    private void Awake() {
-        if (instance == null){
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
             instance = this;
-        }else{
+        }
+        else
+        {
             Destroy(this);
         }
     }
@@ -54,27 +65,58 @@ public class GridManager : MonoBehaviour
     // Update is called once per frame
     IEnumerator UpdateCellsCoroutine()
     {
-        while(true){
+        while (true)
+        {
+            if (!isPause)
+            {
+               for (int i=0;i<CellHistory.Count;i++) 
+                    {
+                       GameObject cell=CellHistory[i];
+                        cell.transform.position = cell.transform.position - new Vector3(0, 0,cell.transform.localScale.z );
+                        if (cell.transform.position.z < -55)
+                        {
+                            CellHistory.Remove(cell);
+                            Destroy(cell);
+                        }
+                    }
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        Cells[x, y].UpdateCells();
+                        if (Cells[x, y].state == StateEnum.ALIVE)
+                        {
+                        GameObject previousCell = Instantiate(cubePrefab, Cells[x, y].transform.position - new Vector3(0, 0,0.5f), Quaternion.identity);
+                        previousCell.SetActive(isHistoryActive);
+                        CellHistory.Add(previousCell);
+                        }
 
-        if (!isPause){
-         for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+                    }
+                }
 
-                Cells[x,y].UpdateCells();
-            } }
-
-             for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
-
-                Cells[x,y].state= Cells[x,y].nextState;
-            } }}
-        yield return new WaitForSeconds(deltaT); // Attendre 0.5 seconde avant la prochaine mise à jour
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        Cells[x, y].state = Cells[x, y].nextState;
+                    }
+                }
+            }
+            yield return new WaitForSeconds(deltaT); // Attendre deltaT seconde avant la prochaine mise à jour
         }
     }
 
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.Space)){
-            isPause=!isPause;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isPause = !isPause;
+        }
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            isHistoryActive=!isHistoryActive;
+            
         }
     }
 

@@ -44,6 +44,23 @@ public class Cell : MonoBehaviour
         }
     }
 
+    private void OnMouseOver()
+    {
+        // improve sprite opacity
+        GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+        
+    }
+
+    private void OnMouseExit()
+    {
+        // reset sprite opacity
+        GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+    }
+     private void OnMouseEnter() {
+    GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+
+    }
+
 
    void UpdateNeighbors() {
     neighbors = new List<Cell>();
@@ -90,12 +107,10 @@ public class Cell : MonoBehaviour
                        
         private void Update() {
                     if (state == StateEnum.DEAD){
-           GetComponent<SpriteRenderer>().color = Color.black;
            cube.SetActive(false);
         
             
         }else if (state == StateEnum.ALIVE){
-        GetComponent<SpriteRenderer>().color = Color.white;
         cube.SetActive(true);
         }
                }
