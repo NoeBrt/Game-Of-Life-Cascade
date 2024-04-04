@@ -74,7 +74,7 @@ public class GridManager : MonoBehaviour
                 for (int i = 0; i < CellHistory.Count; i++)
                 {
                     GameObject cell = CellHistory[i];
-                    cell.transform.position = cell.transform.position - new Vector3(0, 0, cell.transform.localScale.z);
+                    cell.transform.position = cell.transform.position - new Vector3(0, 0, 1);
                     if (cell.transform.position.z < -55)
                     {
                         CellHistory.Remove(cell);
@@ -89,7 +89,7 @@ public class GridManager : MonoBehaviour
                         if (Cells[x, y].state == StateEnum.ALIVE)
                         {
                             if (isHistoryActive){
-                            GameObject previousCell = Instantiate(cubePrefab, Cells[x, y].transform.position - new Vector3(0, 0, 0.5f), Quaternion.identity);
+                            GameObject previousCell = Instantiate(cubePrefab, Cells[x, y].cube.transform.position - new Vector3(0, 0, 1f), Quaternion.identity);
                             CellHistory.Add(previousCell);}
                         }
 

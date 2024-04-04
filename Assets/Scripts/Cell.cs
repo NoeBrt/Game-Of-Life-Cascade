@@ -128,7 +128,7 @@ public class Cell : MonoBehaviour
         {
             if (cube == null)
             {
-                Vector3 cubePosition = new Vector3(transform.position.x, transform.position.y, cubePrefab.transform.localScale.z / 2);
+                Vector3 cubePosition = new Vector3(transform.position.x, transform.position.y, 0.47f);
                 cube = Instantiate(cubePrefab, cubePosition, Quaternion.identity);
             }
 
