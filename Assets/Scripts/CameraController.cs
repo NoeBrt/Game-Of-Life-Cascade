@@ -44,10 +44,11 @@ public class CameraController : MonoBehaviour
         }
 
         // Toggle rotation on space a press
+        if (startTransition == false) {
         if (Input.GetKeyDown(KeyCode.E))
         {
             StartCoroutine(TogglePositionAndRotation());
-        }
+        }}
     }
 
 
