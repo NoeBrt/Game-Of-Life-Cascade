@@ -329,6 +329,7 @@ MonoBehaviour:
   zoomSpeed: 5
   minSize: 1
   maxSize: 26
+  moveSpeed: 100
 --- !u!1001 &963693546
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -515,6 +516,7 @@ MonoBehaviour:
   cellPrefab: {fileID: 112611060397444129, guid: 801bd0360b7ba4a4e81731bb89fe5a90, type: 3}
   deltaT: 0.05
   cubePrefab: {fileID: 6936488134860841744, guid: abfd3ec33900d3e46a861d8fe3b450f9, type: 3}
+  gridMesh: {fileID: 1728370620}
 --- !u!1 &1728370620
 GameObject:
   m_ObjectHideFlags: 0

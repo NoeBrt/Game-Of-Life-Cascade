@@ -25,6 +25,8 @@ public class GridManager : MonoBehaviour
 
     bool isHistoryActive = false;
 
+    public GameObject gridMesh;
+
     void initGrid()
     {
         Cells = new Cell[width, height];
@@ -117,6 +119,11 @@ public class GridManager : MonoBehaviour
         {
             isHistoryActive=!isHistoryActive;
             
+        }
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            gridMesh.SetActive(!gridMesh.activeSelf);          
+           
         }
     }
 
