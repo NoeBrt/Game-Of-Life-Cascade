@@ -19,7 +19,6 @@ public class Cell : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Cell created");
 
     }
 
@@ -35,7 +34,6 @@ public class Cell : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        Debug.Log("Cell clicked");
         if (state == StateEnum.DEAD)
         {
             state = StateEnum.ALIVE;

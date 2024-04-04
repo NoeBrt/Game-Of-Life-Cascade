@@ -1,20 +1,30 @@
 using UnityEngine;
-
+using System.Collections;
+using System;
 public class CameraController : MonoBehaviour
 {
     public float zoomSpeed = 5f; // Adjust this value to control the zoom speed
     public float minSize = 1f; // Minimum size of the camera
     public float maxSize = 10f; // Maximum size of the camera
+    public float transitionSpeed = 1f; // Adjust for the smooth transition speed
 
     private Camera _camera; // Cache the camera component
     private Vector3 _dragOrigin; // To keep track of where the drag started
+    public float rotationSpeed = 1f; // Adjust for the smooth transition speed
+
+    private Vector3 profileAngleRotation = new Vector3(328, 132.455002f, 64.1399918f);
+    private Vector3 faceAngleRotation = new Vector3(0, 180, 0);
+    private Vector3 profilePosition = new Vector3(-46.1500015f, -38.4599991f, 42.6300011f);
+    private Vector3 facePosition = new Vector3(0, 0, 100);
+
+    private bool isProfile = false;
 
     private void Awake()
     {
         _camera = GetComponent<Camera>(); // Get the Camera component once at start
     }
 
-   void Update()
+    void Update()
     {
         // Check for mouse scroll wheel input for zooming
         float scrollInput = Input.GetAxis("Mouse ScrollWheel");
@@ -32,7 +42,44 @@ public class CameraController : MonoBehaviour
         {
             MoveCamera();
         }
+
+        // Toggle rotation on space a press
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            StartCoroutine(TogglePositionAndRotation());
+        }
     }
+
+
+
+    IEnumerator TogglePositionAndRotation()
+    {
+        Vector3 targetPosition = isProfile ? facePosition : profilePosition;
+        Vector3 targetRotation = isProfile ? faceAngleRotation : profileAngleRotation;
+        isProfile = !isProfile; // Toggle the flag
+
+        // Calculate the duration of the transition based on the transition speed
+        float duration = 1f / transitionSpeed;
+        float time = 0;
+
+        Vector3 startPosition = transform.position;
+        Quaternion startRotation = transform.rotation;
+        Quaternion endRotation = Quaternion.Euler(targetRotation);
+
+        while (time < duration)
+        {
+            // Incrementally interpolate the position and rotation from the start to the end over time
+            transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+            transform.rotation = Quaternion.Lerp(startRotation, endRotation, time / duration);
+            time += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+
+        // Ensure the target position and rotation are exactly applied after the interpolation
+        transform.position = targetPosition;
+        transform.rotation = endRotation;
+    }
+
 
     void MoveCamera()
     {
@@ -44,7 +91,7 @@ public class CameraController : MonoBehaviour
         // Update the drag origin for the next frame, to make the movement continuous
         _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
     }
-  void ZoomCamera(float scrollInput)
+    void ZoomCamera(float scrollInput)
     {
         // Get the current size of the camera
         float currentSize = _camera.orthographicSize;
@@ -84,5 +131,5 @@ public class CameraController : MonoBehaviour
 
 
 
-  
+
 }
