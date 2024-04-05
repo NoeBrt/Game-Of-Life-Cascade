@@ -40,12 +40,15 @@ public class Cell : MonoBehaviour
         }
     }
 
+   
+   
     private void OnMouseOver()
     {
         // improve sprite opacity
         GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
 
     }
+
 
     private void OnMouseExit()
     {

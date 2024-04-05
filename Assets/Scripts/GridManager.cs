@@ -26,6 +26,7 @@ public class GridManager : MonoBehaviour
     bool isHistoryActive = false;
 
     public GameObject gridMesh;
+    public float offset = -0.025f;
 
     void initGrid()
     {
@@ -35,7 +36,7 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 GameObject newCell = Instantiate(cellPrefab,
-                new Vector3(x + cellPrefab.transform.localScale.x / 2 - width / 2 + 0.025f, y + cellPrefab.transform.localScale.y / 2 - height / 2 + 0.025f, 0),
+                new Vector3(x + (cellPrefab.transform.localScale.x / 2) - (width / 2)-offset, y + (cellPrefab.transform.localScale.y / 2) - (height / 2)-offset, 0),
                 Quaternion.identity);
                 Cell cell = newCell.GetComponent<Cell>();
                 cell.position = new int[2] { x, y };
@@ -115,7 +116,7 @@ public class GridManager : MonoBehaviour
         {
             isPause = !isPause;
         }
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             isHistoryActive = !isHistoryActive;
 
