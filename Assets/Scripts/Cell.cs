@@ -44,8 +44,7 @@ public class Cell : MonoBehaviour
         {
             if (cube != null)
             {
-                cube.GetComponent<Renderer>().material.color = new Color(0.6f, 0.6f,0.6f, 0.95f);
-                GetComponent<SpriteRenderer>().color = new Color(0.6f, 0.6f,0.6f, 0.5f);
+                cube.GetComponent<Renderer>().material.color = new Color(0.8f, 0.8f,0.8f, 1f);
 
 
             }
