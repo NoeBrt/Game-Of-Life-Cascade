@@ -61,6 +61,8 @@ public class CameraController : MonoBehaviour
         // Calculate the duration of the transition based on the transition speed
         float duration = 1f / transitionSpeed;
         float time = 0;
+
+        bool pauseStateBeforeTransition = GridManager.instance.isPause;
         GridManager.instance.isPause = true;
 
         Vector3 startPosition = transform.position;
@@ -80,7 +82,7 @@ public class CameraController : MonoBehaviour
             transform.position = targetPosition;
             transform.rotation = endRotation;
             isProfile = !isProfile; // Toggle the flag
-            GridManager.instance.isPause = false;
+            GridManager.instance.isPause = pauseStateBeforeTransition;
 
 
         }
