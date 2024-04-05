@@ -115,7 +115,7 @@ public class GridManager : MonoBehaviour
         {
             isPause = !isPause;
         }
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             isHistoryActive = !isHistoryActive;
 
@@ -124,6 +124,16 @@ public class GridManager : MonoBehaviour
         {
             gridMesh.SetActive(!gridMesh.activeSelf);
 
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            CellHistory.ForEach(cell => Destroy(cell));
+            CellHistory.Clear();
+            foreach (Cell cell in Cells)
+            {
+                cell.state = StateEnum.DEAD;
+                cell.nextState = StateEnum.DEAD;
+            }
         }
         if(!Camera.main.GetComponent<CameraController>().isProfile && !Camera.main.GetComponent<CameraController>().startTransition )
         {
