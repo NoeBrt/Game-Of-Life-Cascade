@@ -18,12 +18,23 @@ public class CameraController : MonoBehaviour
     private Vector3 facePosition = new Vector3(0, 0, 100);
     public bool isProfile = true;
     public bool startTransition = false;
+   public Texture2D handCursorTexture; // Assign this in the Unity Editor
+    public Texture2D handCursorClosedTexture; // Assign this in the Unity Editor
+
+    private Vector2 cursorHotspot; // This is the position within the cursor image that will click
 
     private void Awake()
     {
         _camera = GetComponent<Camera>(); // Get the Camera component once at start
     }
+    private void Start()
+    {
+        cursorHotspot = new Vector2(handCursorTexture.width / 2, handCursorTexture.height / 2);
+    }
 
+
+	// Use this for initialization
+	
     void Update()
     {
         // Check for mouse scroll wheel input for zooming
@@ -33,26 +44,47 @@ public class CameraController : MonoBehaviour
             ZoomCamera(scrollInput);
         }
 
+        if(Input.GetKey(KeyCode.LeftAlt))
+        {
+            Cursor.SetCursor(handCursorTexture, cursorHotspot, CursorMode.Auto);
+        }
+        else
+        {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        }
+
+
         // Initiate camera movement
-        if (Input.GetMouseButtonDown(1)) // 1 is for right mouse button
+         if (Input.GetMouseButtonDown(2) || Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButtonDown(1)) // 1 is for right mouse button
         {
             _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
+            // Change icon of the cursor to hand
+            Cursor.SetCursor(handCursorTexture, cursorHotspot, CursorMode.Auto);
         }
-        else if (Input.GetMouseButton(1))
+        else if (Input.GetMouseButtonUp(2) || Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButtonUp(1))
         {
+            // Reset the cursor to default when mouse button is released
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        }
+        else if (Input.GetMouseButton(2) || Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButton(1))
+        {
+            Cursor.SetCursor(handCursorClosedTexture, cursorHotspot, CursorMode.Auto);
             MoveCamera();
         }
 
         // Toggle rotation on space a press
-        if (startTransition == false) {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (startTransition == false)
         {
-            StartCoroutine(TogglePositionAndRotation());
-        }}
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                StartCoroutine(TogglePositionAndRotation());
+            }
+        }
     }
 
-
-
+    
+  
+  
     IEnumerator TogglePositionAndRotation()
     {
         Vector3 targetPosition = isProfile ? facePosition : profilePosition;
@@ -68,75 +100,90 @@ public class CameraController : MonoBehaviour
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
         Quaternion endRotation = Quaternion.Euler(targetRotation);
-        startTransition=true;
+        startTransition = true;
         while (time < duration)
         {
             // decrease the opacity of the cellshistory
-                transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
-                transform.rotation = Quaternion.Lerp(startRotation, endRotation, time / duration);
-                time += Time.deltaTime;
-                yield return null; // Wait for the next frame
-            }
-            startTransition=false;
-            // Ensure the target position and rotation are exactly applied after the interpolation
-            transform.position = targetPosition;
-            transform.rotation = endRotation;
-            isProfile = !isProfile; // Toggle the flag
-            GridManager.instance.isPause = pauseStateBeforeTransition;
-
-
+            transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+            transform.rotation = Quaternion.Lerp(startRotation, endRotation, time / duration);
+            time += Time.deltaTime;
+            yield return null; // Wait for the next frame
         }
-
-
-        void MoveCamera()
-        {
-            Vector3 difference = _dragOrigin - _camera.ScreenToWorldPoint(Input.mousePosition);
-
-            // Apply the movement to the camera
-            transform.position += difference;
-
-            // Update the drag origin for the next frame, to make the movement continuous
-            _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
-        }
-        void ZoomCamera(float scrollInput)
-        {
-            // Get the current size of the camera
-            float currentSize = _camera.orthographicSize;
-
-            // Calculate the new size after zooming
-            float newSize = Mathf.Clamp(currentSize - scrollInput * zoomSpeed, minSize, maxSize);
-
-            if (Mathf.Abs(newSize - currentSize) > Mathf.Epsilon)
-            {
-                // Calculate how much we will zoom
-                float zoomFactor = currentSize / newSize;
-
-                // Calculate the world position of the mouse before zooming
-                Vector3 worldBeforeZoom = ScreenToWorldPoint(Input.mousePosition, currentSize);
-
-                // Set the new size to the camera
-                _camera.orthographicSize = newSize;
-
-                // Calculate the world position of the mouse after zooming
-                Vector3 worldAfterZoom = ScreenToWorldPoint(Input.mousePosition, newSize);
-
-                // Move the camera by the difference in world positions caused by zooming
-                Vector3 cameraPositionAdjustment = worldBeforeZoom - worldAfterZoom;
-                transform.position += cameraPositionAdjustment;
-            }
-        }
-
-        // Converts screen point to world point at a given z distance from the camera
-        private Vector3 ScreenToWorldPoint(Vector3 screenPoint, float zDistance)
-        {
-            // Adjust the screen point to account for the distance from the camera
-            screenPoint.z = zDistance - _camera.transform.position.z;
-            return _camera.ScreenToWorldPoint(screenPoint);
-        }
-
-        // Your existing ScreenToWorldPoint method...
-
-
+        startTransition = false;
+        // Ensure the target position and rotation are exactly applied after the interpolation
+        transform.position = targetPosition;
+        transform.rotation = endRotation;
+        isProfile = !isProfile; // Toggle the flag
+        GridManager.instance.isPause = pauseStateBeforeTransition;
 
 
     }
+
+
+    void MoveCamera()
+    {
+        Vector3 difference = _dragOrigin - _camera.ScreenToWorldPoint(Input.mousePosition);
+
+        // Apply the movement to the camera
+        transform.position += difference;
+
+        // Update the drag origin for the next frame, to make the movement continuous
+        _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
+    }
+    void ZoomCamera(float scrollInput)
+    {
+        // Get the current size of the camera
+        float currentSize = _camera.orthographicSize;
+
+        // Calculate the new size after zooming
+        float newSize = Mathf.Clamp(currentSize - scrollInput * zoomSpeed, minSize, maxSize);
+
+        if (Mathf.Abs(newSize - currentSize) > Mathf.Epsilon)
+        {
+            // Calculate how much we will zoom
+            float zoomFactor = currentSize / newSize;
+
+            // Calculate the world position of the mouse before zooming
+            Vector3 worldBeforeZoom = ScreenToWorldPoint(Input.mousePosition, currentSize);
+
+            // Set the new size to the camera
+            _camera.orthographicSize = newSize;
+
+            // Calculate the world position of the mouse after zooming
+            Vector3 worldAfterZoom = ScreenToWorldPoint(Input.mousePosition, newSize);
+
+            // Move the camera by the difference in world positions caused by zooming
+            Vector3 cameraPositionAdjustment = worldBeforeZoom - worldAfterZoom;
+            transform.position += cameraPositionAdjustment;
+        }
+    }
+
+    // Converts screen point to world point at a given z distance from the camera
+    private Vector3 ScreenToWorldPoint(Vector3 screenPoint, float zDistance)
+    {
+        // Adjust the screen point to account for the distance from the camera
+        screenPoint.z = zDistance - _camera.transform.position.z;
+        return _camera.ScreenToWorldPoint(screenPoint);
+    }
+
+    // Your existing ScreenToWorldPoint method...
+
+
+
+  public enum WindowsCursor
+    {
+        StandardArrowAndSmallHourglass = 32650,
+        StandardArrow = 32512,
+        Crosshair = 32515,
+        Hand = 32649,
+        ArrowAndQuestionMark = 32651,
+
+        FourPointedArrowPointingNorthSouthEastAndWest = 32646,
+        DoublePointedArrowPointingNortheastAndSouthwest = 32643,
+        DoublePointedArrowPointingNorthAndSouth = 32645,
+        DoublePointedArrowPointingNorthwestAndSoutheast = 32642,
+        DoublePointedArrowPointingWestAndEast = 32644,
+        VerticalArrow = 32516,
+        Hourglass = 32514
+    }
+}

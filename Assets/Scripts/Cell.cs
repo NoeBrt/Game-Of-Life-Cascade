@@ -32,14 +32,7 @@ public class Cell : MonoBehaviour
 
 
     }
-    private void OnMouseDown()
-    {
-        if (state == StateEnum.DEAD)
-        {
-            state = StateEnum.ALIVE;
-        }
-    }
-
+  
    
    
     private void OnMouseOver()
@@ -47,11 +40,40 @@ public class Cell : MonoBehaviour
         // improve sprite opacity
         GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
 
+        if (state == StateEnum.ALIVE)
+        {
+            if (cube != null)
+            {
+                cube.GetComponent<Renderer>().material.color = new Color(0.6f, 0.6f,0.6f, 0.95f);
+                GetComponent<SpriteRenderer>().color = new Color(0.6f, 0.6f,0.6f, 0.5f);
+
+
+            }
+        }
+       
+
+        if (Input.GetMouseButton(0) && state == StateEnum.DEAD)
+        {
+            state = StateEnum.ALIVE;
+        }
+        else if (Input.GetMouseButton(1) && state == StateEnum.ALIVE )
+        {
+            state = StateEnum.DEAD;
+        }
+
     }
 
 
     private void OnMouseExit()
     {
+        
+        if (state == StateEnum.ALIVE)
+        {
+            if (cube != null)
+            {
+                cube.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
+            }
+        }
         // reset sprite opacity
         GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
     }
