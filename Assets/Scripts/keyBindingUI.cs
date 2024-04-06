@@ -15,6 +15,9 @@ public class keyBindingUI : MonoBehaviour
     public GameObject keyUi;
     public bool pause=true;
 
+    public bool timeCascade=false;
+
+
     // Update is called once per frame
     void Update()
     {
@@ -25,7 +28,14 @@ public class keyBindingUI : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Z))
         {
+            timeCascade=!timeCascade;
+        }
+        if (timeCascade)
+        {
             zTimeCascadeButton.GetComponent<CanvasGroup>().alpha = 1;
+        }else
+        {
+            zTimeCascadeButton.GetComponent<CanvasGroup>().alpha = 0.3f;
         }
         if (Input.GetKeyDown(KeyCode.G))
         {
