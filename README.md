@@ -6,20 +6,20 @@
 
 ## Bindings
 
-**Left Click** :<BLOCKQUOTE>Summon a cell on the grid</BLOCKQUOTE>  
+**Left Click** :<p STYLE="padding:0 0 0 20px;">Summon a cell on the grid</p>
 
-**Right CLick** :<BLOCKQUOTE>Kill a cell on the grid</BLOCKQUOTE> 
+**Right CLick** :<p STYLE="padding:0 0 0 20px;">Kill a cell on the grid</p>
 
-**Middle Click** :<BLOCKQUOTE>Moove the camera around</BLOCKQUOTE>  
+**Middle Click or Alt + Right Click** :<p STYLE="padding:0 0 0 20px;">Moove the camera around</p>
 
-**ScrollWheel** :<BLOCKQUOTE>Zoom</BLOCKQUOTE> 
+**ScrollWheel** :<p STYLE="padding:0 0 0 20px;">Zoom</p>
 
-**R** :<BLOCKQUOTE>Reset the grid</BLOCKQUOTE> 
+**R** :<p STYLE="padding:0 0 0 20px;">Reset the grid</p>
 
-**Z** :<BLOCKQUOTE>Time Cascade : The Time is now represented as the Z-Axis</BLOCKQUOTE> 
+**Z** :<p STYLE="padding:0 0 0 20px;">Time Cascade : The Time is now represented as the Z-Axis</p>
 
-**E** :<BLOCKQUOTE>Toogle view from 2D to 3D</BLOCKQUOTE> 
+**E** :<p STYLE="padding:0 0 0 20px;">Toogle view from 2D to 3D</p>
 
-**T** :<BLOCKQUOTE>Toogle UI visibility</BLOCKQUOTE> 
+**T** :<p STYLE="padding:0 0 0 20px;">Toogle UI visibility</p>
 
-**Space** :<BLOCKQUOTE>Freeze</BLOCKQUOTE> 
+**Space** :<p STYLE="padding:0 0 0 20px;">Freeze</p>
