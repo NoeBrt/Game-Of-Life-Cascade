@@ -101,6 +101,8 @@ public class CameraController : MonoBehaviour
         Quaternion startRotation = transform.rotation;
         Quaternion endRotation = Quaternion.Euler(targetRotation);
         startTransition = true;
+        KeyBindingUI.instance.ToggleViewChange();
+
         while (time < duration)
         {
             // decrease the opacity of the cellshistory
@@ -110,6 +112,7 @@ public class CameraController : MonoBehaviour
             yield return null; // Wait for the next frame
         }
         startTransition = false;
+        KeyBindingUI.instance.ToggleViewChange();
         // Ensure the target position and rotation are exactly applied after the interpolation
         transform.position = targetPosition;
         transform.rotation = endRotation;
@@ -170,20 +173,5 @@ public class CameraController : MonoBehaviour
 
 
 
-  public enum WindowsCursor
-    {
-        StandardArrowAndSmallHourglass = 32650,
-        StandardArrow = 32512,
-        Crosshair = 32515,
-        Hand = 32649,
-        ArrowAndQuestionMark = 32651,
-
-        FourPointedArrowPointingNorthSouthEastAndWest = 32646,
-        DoublePointedArrowPointingNortheastAndSouthwest = 32643,
-        DoublePointedArrowPointingNorthAndSouth = 32645,
-        DoublePointedArrowPointingNorthwestAndSoutheast = 32642,
-        DoublePointedArrowPointingWestAndEast = 32644,
-        VerticalArrow = 32516,
-        Hourglass = 32514
-    }
+ 
 }

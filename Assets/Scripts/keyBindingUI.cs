@@ -1,89 +1,105 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class keyBindingUI : MonoBehaviour
+public class KeyBindingUI : MonoBehaviour
 {
-    public GameObject resetButton;
-    public GameObject zTimeCascadeButton;
-    public GameObject gToogleGridButton;
-    public GameObject eChangeViewButton;
-    public GameObject tToogleUIButton;
-    public GameObject spacePauseButton;
+    public GameObject ResetButton;
+    public GameObject TimeCascadeButton;
+    public GameObject ToggleGridButton;
+    public GameObject ChangeViewButton;
+    public GameObject ToggleUIButton;
+    public GameObject PauseButton;
+    public GameObject KeyUi;
 
-    public GameObject keyUi;
-    public bool pause=true;
+    private bool isPaused = true;
+    private bool timeCascade = false;
+    private bool viewChange = false;
 
-    public bool timeCascade=false;
-
-
-    // Update is called once per frame
-    void Update()
+    private Dictionary<KeyCode, System.Action> keyDownActions;
+    private Dictionary<KeyCode, System.Action> keyUpActions;
+    public static KeyBindingUI instance;
+    private void Awake()
     {
-        // Set alpha to 1 when key is pressed down
-        if (Input.GetKeyDown(KeyCode.R))
+        keyDownActions = new Dictionary<KeyCode, System.Action>
         {
-            resetButton.GetComponent<CanvasGroup>().alpha = 1;
-        }
-        if (Input.GetKeyDown(KeyCode.Z))
+            { KeyCode.R, () => SetAlpha(ResetButton, 1) },
+            { KeyCode.Z, () => ToggleTimeCascade() },
+            { KeyCode.G, () => SetAlpha(ToggleGridButton, 1) },
+            { KeyCode.Space, () => TogglePause() },
+            { KeyCode.T, () => ToggleUI() }
+        };
+
+        keyUpActions = new Dictionary<KeyCode, System.Action>
         {
-            timeCascade=!timeCascade;
-        }
-        if (timeCascade)
+            { KeyCode.R, () => SetAlpha(ResetButton, 0.3f) },
+            { KeyCode.Z, () => SetAlpha(TimeCascadeButton, timeCascade ? 1 : 0.3f) }, // Reflects current state on key release
+            { KeyCode.G, () => SetAlpha(ToggleGridButton, 0.3f) },
+            { KeyCode.T, () => SetAlpha(ToggleUIButton, 0.3f) }
+        };
+        if (instance == null)
         {
-            zTimeCascadeButton.GetComponent<CanvasGroup>().alpha = 1;
-        }else
-        {
-            zTimeCascadeButton.GetComponent<CanvasGroup>().alpha = 0.3f;
-        }
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            gToogleGridButton.GetComponent<CanvasGroup>().alpha = 1;
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            eChangeViewButton.GetComponent<CanvasGroup>().alpha = 1;
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            pause = !pause;
-        }
-        if (pause)
-        {
-                spacePauseButton.GetComponent<CanvasGroup>().alpha = 1;
-        
+            instance = this;
         }
         else
-            {
-                spacePauseButton.GetComponent<CanvasGroup>().alpha = 0.3f;
-            }
-        if (Input.GetKeyDown(KeyCode.T))
         {
-            tToogleUIButton.GetComponent<CanvasGroup>().alpha = 1;
-            keyUi.SetActive(!keyUi.activeSelf);
+            Destroy(this);
         }
 
-        // Set alpha back to 0.3 when key is released
-        if (Input.GetKeyUp(KeyCode.R))
+    }
+
+    public void ToggleViewChange()
+    {
+        viewChange = !viewChange;
+        SetAlpha(ChangeViewButton, viewChange ? 1 : 0.3f);
+    }
+
+    private void Start()
+    {
+        // Initial update of buttons based on their state
+        SetAlpha(PauseButton, isPaused ? 1 : 0.3f);
+        SetAlpha(TimeCascadeButton, timeCascade ? 1 : 0.3f);
+    }
+
+    private void Update()
+    {
+        foreach (var action in keyDownActions)
         {
-            resetButton.GetComponent<CanvasGroup>().alpha = 0.3f;
+            if (Input.GetKeyDown(action.Key))
+            {
+                action.Value.Invoke();
+            }
         }
-        if (Input.GetKeyUp(KeyCode.Z))
+
+        foreach (var action in keyUpActions)
         {
-            zTimeCascadeButton.GetComponent<CanvasGroup>().alpha = 0.3f;
+            if (Input.GetKeyUp(action.Key))
+            {
+                action.Value.Invoke();
+            }
         }
-        if (Input.GetKeyUp(KeyCode.G))
-        {
-            gToogleGridButton.GetComponent<CanvasGroup>().alpha = 0.3f;
-        }
-        if (Input.GetKeyUp(KeyCode.E))
-        {
-            eChangeViewButton.GetComponent<CanvasGroup>().alpha = 0.3f;
-        }
-        if (Input.GetKeyUp(KeyCode.T))
-        {
-            tToogleUIButton.GetComponent<CanvasGroup>().alpha = 0.3f;
-        }
+    }
+
+    private void ToggleTimeCascade()
+    {
+        timeCascade = !timeCascade;
+        SetAlpha(TimeCascadeButton, timeCascade ? 1 : 0.3f);
+    }
+
+    private void TogglePause()
+    {
+        isPaused = !isPaused;
+        SetAlpha(PauseButton, isPaused ? 1 : 0.3f);
+    }
+
+    private void ToggleUI()
+    {
+        SetAlpha(ToggleUIButton, 1);
+        KeyUi.SetActive(!KeyUi.activeSelf);
+    }
+
+    private void SetAlpha(GameObject button, float alpha)
+    {
+        button.GetComponent<CanvasGroup>().alpha = alpha;
     }
 }

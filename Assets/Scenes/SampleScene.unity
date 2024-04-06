@@ -876,14 +876,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca3f27e0218d94049868b37667b4036b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resetButton: {fileID: 356909096}
-  zTimeCascadeButton: {fileID: 471906645}
-  gToogleGridButton: {fileID: 944121148}
-  eChangeViewButton: {fileID: 82705930}
-  tToogleUIButton: {fileID: 970776230}
-  spacePauseButton: {fileID: 1428870439}
-  keyUi: {fileID: 1110261505}
-  pause: 1
+  ResetButton: {fileID: 356909096}
+  TimeCascadeButton: {fileID: 471906645}
+  ToggleGridButton: {fileID: 944121148}
+  ChangeViewButton: {fileID: 82705930}
+  ToggleUIButton: {fileID: 970776230}
+  PauseButton: {fileID: 1428870439}
+  KeyUi: {fileID: 1110261505}
 --- !u!1 &905907879
 GameObject:
   m_ObjectHideFlags: 0
