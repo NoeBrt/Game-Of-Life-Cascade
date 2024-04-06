@@ -6,20 +6,20 @@
 
 ## Bindings
 
-**Left Click** :<BLOCKQUOTE></BLOCKQUOTE> Summon a cell on the grid 
+**Left Click** :<BLOCKQUOTE>Summon a cell on the grid</BLOCKQUOTE>  
 
-**Right CLick** :<BLOCKQUOTE></BLOCKQUOTE> Kill a cell on the grid
+**Right CLick** :<BLOCKQUOTE>Kill a cell on the grid</BLOCKQUOTE> 
 
-**Middle Click** :<BLOCKQUOTE></BLOCKQUOTE> Moove the camera around 
+**Middle Click** :<BLOCKQUOTE>Moove the camera around</BLOCKQUOTE>  
 
-**ScrollWheel** :<BLOCKQUOTE></BLOCKQUOTE> Zoom
+**ScrollWheel** :<BLOCKQUOTE>Zoom</BLOCKQUOTE> 
 
-**R** :<BLOCKQUOTE></BLOCKQUOTE> Reset the grid
+**R** :<BLOCKQUOTE>Reset the grid</BLOCKQUOTE> 
 
-**Z** :<BLOCKQUOTE></BLOCKQUOTE> Time Cascade : The Time is now represented as the Z-Axis
+**Z** :<BLOCKQUOTE>Time Cascade : The Time is now represented as the Z-Axis</BLOCKQUOTE> 
 
-**E** :<BLOCKQUOTE></BLOCKQUOTE> Toogle view from 2D to 3D
+**E** :<BLOCKQUOTE>Toogle view from 2D to 3D</BLOCKQUOTE> 
 
-**T** :<BLOCKQUOTE></BLOCKQUOTE> Toogle UI visibility 
+**T** :<BLOCKQUOTE>Toogle UI visibility</BLOCKQUOTE> 
 
-**Space** :<BLOCKQUOTE></BLOCKQUOTE> Freeze
+**Space** :<BLOCKQUOTE>Freeze</BLOCKQUOTE> 
