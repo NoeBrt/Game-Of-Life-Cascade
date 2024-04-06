@@ -1,6 +1,6 @@
 # A Game Of Life With A Twist
 
-## Reinterpretation of the famous John Conway's Game of Life
+## Reinterpretation of the famous John Conway's Game of Life In Perspective
 
 ![Untitled](https://github.com/NoeBrt/Game-Of-Life-3D/assets/94910317/3752d0c9-c1a4-421e-a076-b108d0435597)
 
