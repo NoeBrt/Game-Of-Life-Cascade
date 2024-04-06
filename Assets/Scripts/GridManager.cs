@@ -76,7 +76,7 @@ public class GridManager : MonoBehaviour
                 {
                     GameObject cell = CellHistory[i];
                     cell.transform.position = cell.transform.position - new Vector3(0, 0, 1);
-                    if (cell.transform.position.z < -55)
+                    if (cell.transform.position.z < -500)
                     {
                         CellHistory.Remove(cell);
                         Destroy(cell);

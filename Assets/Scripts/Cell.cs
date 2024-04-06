@@ -32,32 +32,43 @@ public class Cell : MonoBehaviour
 
 
     }
-  
-   
-   
+
+
+
     private void OnMouseOver()
     {
         // improve sprite opacity
+         if (!Camera.main.GetComponent<CameraController>().isDragging)
+        {
         GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
 
         if (state == StateEnum.ALIVE)
         {
             if (cube != null)
             {
-                cube.GetComponent<Renderer>().material.color = new Color(0.95f, 0.95f,0.95f, 1f);
+                cube.GetComponent<Renderer>().material.color = new Color(0.95f, 0.95f, 0.95f, 1f);
 
 
             }
         }
        
-
-        if (Input.GetMouseButton(0) && state == StateEnum.DEAD)
-        {
-            state = StateEnum.ALIVE;
-        }
-        else if (Input.GetMouseButton(1) && state == StateEnum.ALIVE )
-        {
-            state = StateEnum.DEAD;
+            if (Input.GetMouseButton(0))
+            {
+                state = StateEnum.ALIVE;
+            }
+            else if (Input.GetMouseButton(1))
+            {
+                state = StateEnum.DEAD;
+            }
+        }else {
+            GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+            if (state == StateEnum.ALIVE)
+            {
+                if (cube != null)
+                {
+                    cube.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
+                }
+            }
         }
 
     }
@@ -65,7 +76,7 @@ public class Cell : MonoBehaviour
 
     private void OnMouseExit()
     {
-        
+
         if (state == StateEnum.ALIVE)
         {
             if (cube != null)

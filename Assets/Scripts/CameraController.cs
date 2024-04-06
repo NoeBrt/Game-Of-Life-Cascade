@@ -22,7 +22,7 @@ public class CameraController : MonoBehaviour
     public Texture2D handCursorClosedTexture; // Assign this in the Unity Editor
 
     private Vector2 cursorHotspot; // This is the position within the cursor image that will click
-
+    public bool isDragging = false;
     private void Awake()
     {
         _camera = GetComponent<Camera>(); // Get the Camera component once at start
@@ -46,28 +46,33 @@ public class CameraController : MonoBehaviour
 
         if(Input.GetKey(KeyCode.LeftAlt))
         {
+            isDragging = true;
             Cursor.SetCursor(handCursorTexture, cursorHotspot, CursorMode.Auto);
         }
         else
         {
+            isDragging = false;
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         }
 
 
         // Initiate camera movement
-         if (Input.GetMouseButtonDown(2) || Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButtonDown(1)) // 1 is for right mouse button
+         if (Input.GetMouseButtonDown(2) || Input.GetKey(KeyCode.LeftAlt) && (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))) // 1 is for right mouse button
         {
+            isDragging = true;
             _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
             // Change icon of the cursor to hand
             Cursor.SetCursor(handCursorTexture, cursorHotspot, CursorMode.Auto);
         }
-        else if (Input.GetMouseButtonUp(2) || Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButtonUp(1))
+        else if (Input.GetMouseButtonUp(2) || Input.GetKey(KeyCode.LeftAlt) && (Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(0)))
         {
+            isDragging = false;
             // Reset the cursor to default when mouse button is released
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         }
-        else if (Input.GetMouseButton(2) || Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButton(1))
+        else if (Input.GetMouseButton(2) || Input.GetKey(KeyCode.LeftAlt) && (Input.GetMouseButton(1) || Input.GetMouseButton(0)))
         {
+            isDragging = true;
             Cursor.SetCursor(handCursorClosedTexture, cursorHotspot, CursorMode.Auto);
             MoveCamera();
         }

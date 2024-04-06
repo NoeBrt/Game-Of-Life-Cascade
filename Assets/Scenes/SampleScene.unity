@@ -562,8 +562,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoomSpeed: 5
-  minSize: 1
-  maxSize: 26
+  minSize: 0.1
+  maxSize: 915.2
   transitionSpeed: 1
   rotationSpeed: 1
   isProfile: 1
@@ -1073,11 +1073,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8608867539640854090, guid: cc21911e612f5874eb3966a4913d005f, type: 3}
       propertyPath: far clip plane
-      value: 10000
+      value: 22139
       objectReference: {fileID: 0}
     - target: {fileID: 8608867539640854090, guid: cc21911e612f5874eb3966a4913d005f, type: 3}
       propertyPath: near clip plane
-      value: 0.01
+      value: 0.000001
       objectReference: {fileID: 0}
     - target: {fileID: 8608867539640854090, guid: cc21911e612f5874eb3966a4913d005f, type: 3}
       propertyPath: orthographic size
