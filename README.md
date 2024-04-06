@@ -6,7 +6,7 @@
 
 ## Bindings
 
-**Left Click**: Summon a cell on the grid
+**Left Click**: <BLOCKQUOTE>Summon a cell on the grid</BLOCKQUOTE>
 
 **Right Click**: Kill a cell on the grid
 
