@@ -6,29 +6,29 @@
 
 ## Bindings
 
-**Left Click**: 
+**Left Click** : 
 <BLOCKQUOTE>Summon a cell on the grid</BLOCKQUOTE>
 
-**Right Click**: 
+**Right Click** : 
 <BLOCKQUOTE>Kill a cell on the grid</BLOCKQUOTE>
 
-**Middle Click or Alt + Right Click**: 
+**Middle Click or Alt + Right Click** : 
 <BLOCKQUOTE>Move the camera around</BLOCKQUOTE>
 
-**ScrollWheel**: 
+**ScrollWheel** : 
 <BLOCKQUOTE>Zoom</BLOCKQUOTE>
 
-**R**: 
+**R** : 
 <BLOCKQUOTE>Reset the grid</BLOCKQUOTE>
 
-**Z**: 
+**Z** : 
 <BLOCKQUOTE>Time Cascade: The Time is now represented as the Z-Axis</BLOCKQUOTE>
 
-**E**: 
+**E** : 
 <BLOCKQUOTE>Toggle view from 2D to 3D</BLOCKQUOTE>
 
-**T**: 
+**T** :  
 <BLOCKQUOTE>Toggle UI visibility</BLOCKQUOTE>
 
-**Space**: 
+**Space** : 
 <BLOCKQUOTE>Freeze</BLOCKQUOTE>
