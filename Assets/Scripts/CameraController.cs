@@ -35,57 +35,64 @@ public class CameraController : MonoBehaviour
 
 	// Use this for initialization
 	
-    void Update()
+   void Update()
+{
+    // Check for mouse scroll wheel input for zooming
+    float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+    if (scrollInput != 0f)
     {
-        // Check for mouse scroll wheel input for zooming
-        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
-        if (scrollInput != 0f)
-        {
-            ZoomCamera(scrollInput);
-        }
-
-        if(Input.GetKey(KeyCode.LeftAlt))
-        {
-            isDragging = true;
-            Cursor.SetCursor(handCursorTexture, cursorHotspot, CursorMode.Auto);
-        }
-        else
-        {
-            isDragging = false;
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        }
-
-
-        // Initiate camera movement
-         if (Input.GetMouseButtonDown(2) || Input.GetKey(KeyCode.LeftAlt) && (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))) // 1 is for right mouse button
-        {
-            isDragging = true;
-            _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
-            // Change icon of the cursor to hand
-            Cursor.SetCursor(handCursorTexture, cursorHotspot, CursorMode.Auto);
-        }
-        else if (Input.GetMouseButtonUp(2) || Input.GetKey(KeyCode.LeftAlt) && (Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(0)))
-        {
-            isDragging = false;
-            // Reset the cursor to default when mouse button is released
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        }
-        else if (Input.GetMouseButton(2) || Input.GetKey(KeyCode.LeftAlt) && (Input.GetMouseButton(1) || Input.GetMouseButton(0)))
-        {
-            isDragging = true;
-            Cursor.SetCursor(handCursorClosedTexture, cursorHotspot, CursorMode.Auto);
-            MoveCamera();
-        }
-
-        // Toggle rotation on space a press
-        if (startTransition == false)
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                StartCoroutine(TogglePositionAndRotation());
-            }
-        }
+        ZoomCamera(scrollInput);
     }
+
+    // Handle camera dragging
+    HandleCameraDragging();
+
+    // Toggle rotation on space press
+    if (!startTransition && Input.GetKeyDown(KeyCode.E))
+    {
+        StartCoroutine(TogglePositionAndRotation());
+    }
+}
+
+void HandleCameraDragging()
+{
+    bool isMiddleMouseButtonDown = Input.GetMouseButtonDown(2);
+    bool isAltHeld = Input.GetKey(KeyCode.LeftAlt);
+    bool isAnyMouseButtonPressed = isMiddleMouseButtonDown || (isAltHeld && (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0)));
+    bool isAnyMouseButtonReleased = Input.GetMouseButtonUp(2) || (isAltHeld && (Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(0)));
+    bool isAnyMouseButtonHeld = Input.GetMouseButton(2) || (isAltHeld && (Input.GetMouseButton(1) || Input.GetMouseButton(0)));
+
+    if (isAnyMouseButtonPressed)
+    {
+        isDragging = true;
+        _dragOrigin = _camera.ScreenToWorldPoint(Input.mousePosition);
+        // Change icon of the cursor to hand
+        Cursor.SetCursor(handCursorTexture, cursorHotspot, CursorMode.Auto);
+    }
+    else if (isAnyMouseButtonReleased)
+    {
+        isDragging = false;
+        // Reset the cursor to default when mouse button is released
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+    else if (isAnyMouseButtonHeld)
+    {
+        isDragging = true;
+        // If dragging, set cursor to closed hand texture
+        Cursor.SetCursor(handCursorClosedTexture, cursorHotspot, CursorMode.Auto);
+        MoveCamera();
+    }
+    else if (isAltHeld) // If only Alt is pressed without any mouse buttons
+    {
+        isDragging = true;
+        Cursor.SetCursor(handCursorTexture, cursorHotspot, CursorMode.Auto);
+    }
+    else
+    {
+        isDragging = false;
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+}
 
     
   
