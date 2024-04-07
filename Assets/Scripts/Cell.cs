@@ -21,8 +21,8 @@ public class Cell : MonoBehaviour
 
     public Color mouseOverCubeColor = new Color(0.95f, 0.95f, 0.95f, 1f);
 
-    public int countAliveNeighbors;
-
+    public List<GameObject> cellHistory;
+    private float historyBound = -55f;
 
 
     // Start is called before the first frame update
@@ -30,18 +30,16 @@ public class Cell : MonoBehaviour
     {
         cameraController = Camera.main.GetComponent<CameraController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
+        cellHistory = new List<GameObject>();
+        historyBound = GridManager.instance.historyBound;
     }
 
     // Update is called once per frame
     public void UpdateCell()
     {
-
-
+        UpdateHistory();
         UpdateNeighbors();
         UpdateCellState();
-
-
     }
     public void UpdateCubeRender()
     {
@@ -174,6 +172,24 @@ public class Cell : MonoBehaviour
 
         UpdateCubeRender();
 
+
+    }
+    private void UpdateHistory()
+    {
+        cellHistory.ForEach(cell => cell.transform.position -= new Vector3(0, 0, 1f));
+
+        bool isHistoryActive = GridManager.instance.isHistoryActive;
+        GameObject firstElement = cellHistory.FirstOrDefault();
+        if (cellHistory.Count > 0 && firstElement.transform.position.z < historyBound)
+        {
+            cellHistory.RemoveAt(0);
+            Destroy(firstElement);
+        }
+        if (state == StateEnum.ALIVE && isHistoryActive)
+        {
+            GameObject previousCell = Instantiate(cubePrefab, cube.transform.position - new Vector3(0, 0, 1f), Quaternion.identity);
+            cellHistory.Add(previousCell);
+        }
     }
 
 

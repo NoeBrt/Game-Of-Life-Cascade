@@ -17,17 +17,15 @@ public class GridManager : MonoBehaviour
     float deltaT = 0.2f;
 
     public bool isPause = true;
-   public List<GameObject> CellHistory = new List<GameObject>();
 
     public Cell[,] Cells { get; set; }
 
-    public GameObject cubePrefab;
-
-    bool isHistoryActive = false;
+    public bool isHistoryActive = false;
 
     public GameObject gridMesh;
     public float offset = -0.025f;
-
+    public float historyBound = -55f;
+    CameraController cameraController;
     void initGrid()
     {
         Cells = new Cell[width, height];
@@ -36,7 +34,7 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 GameObject newCell = Instantiate(cellPrefab,
-                new Vector3(x + (cellPrefab.transform.localScale.x / 2) - (width / 2)-offset, y + (cellPrefab.transform.localScale.y / 2) - (height / 2)-offset, 0),
+                new Vector3(x + (cellPrefab.transform.localScale.x / 2) - (width / 2) - offset, y + (cellPrefab.transform.localScale.y / 2) - (height / 2) - offset, 0),
                 Quaternion.identity);
                 Cell cell = newCell.GetComponent<Cell>();
                 cell.position = new int[2] { x, y };
@@ -46,6 +44,7 @@ public class GridManager : MonoBehaviour
     }
     void Start()
     {
+        cameraController = Camera.main.GetComponent<CameraController>();
 
         initGrid();
         StartCoroutine(UpdateCellsCoroutine());
@@ -72,45 +71,45 @@ public class GridManager : MonoBehaviour
         {
             if (!isPause)
             {
-                for (int i = 0; i < CellHistory.Count; i++)
-                {
-                    GameObject cell = CellHistory[i];
-                    cell.transform.position = cell.transform.position - new Vector3(0, 0, 1);
-                    if (cell.transform.position.z < -55)
-                    {
-                        CellHistory.Remove(cell);
-                        Destroy(cell);
-                    }
-                }
-                for (int x = 0; x < width; x++)
-                {
-                    for (int y = 0; y < height; y++)
-                    {
-                        Cells[x, y].UpdateCell();
-                        if (Cells[x, y].state == StateEnum.ALIVE)
-                        {
-                            if (isHistoryActive){
-                            GameObject previousCell = Instantiate(cubePrefab, Cells[x, y].cube.transform.position - new Vector3(0, 0, 1f), Quaternion.identity);
-                            CellHistory.Add(previousCell);}
-                        }
-
-                    }
-                }
-
-                for (int x = 0; x < width; x++)
-                {
-                    for (int y = 0; y < height; y++)
-                    {
-                        Cells[x, y].state = Cells[x, y].nextState;
-                    }
-                }
+                UpdateCellsAndHandleHistory();
+                ApplyNextStatesToCells();
             }
-            yield return new WaitForSeconds(deltaT); // Attendre deltaT seconde avant la prochaine mise à jour
+
+            // Wait for deltaT seconds before the next update
+            yield return new WaitForSeconds(deltaT);
+        }
+    }
+
+    private void UpdateCellsAndHandleHistory()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cells[x, y].UpdateCell();
+            }
+        }
+    }
+
+    private void ApplyNextStatesToCells()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cells[x, y].state = Cells[x, y].nextState;
+            }
         }
     }
 
 
     private void Update()
+    {
+        HandleKeyboardInput();
+        UpdateCellHistoryVisibility();
+    }
+
+    private void HandleKeyboardInput()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -119,33 +118,42 @@ public class GridManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z))
         {
             isHistoryActive = !isHistoryActive;
-
         }
         if (Input.GetKeyDown(KeyCode.G))
         {
             gridMesh.SetActive(!gridMesh.activeSelf);
-
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            CellHistory.ForEach(cell => Destroy(cell));
-            CellHistory.Clear();
-            foreach (Cell cell in Cells)
+            ResetCells();
+        }
+    }
+
+    private void ResetCells()
+    {
+        foreach (var cell in Cells)
+        {
+            cell.state = StateEnum.DEAD;
+            cell.nextState = StateEnum.DEAD;
+            cell.cellHistory.ForEach(Destroy);
+            cell.cellHistory.Clear();
+        }
+    }
+
+    private void UpdateCellHistoryVisibility()
+    {
+        if (!cameraController.isProfile)
+        {
+            bool shouldShowCells = cameraController.startTransition && isHistoryActive;
+            foreach (var cell in Cells)
             {
-                cell.state = StateEnum.DEAD;
-                cell.nextState = StateEnum.DEAD;
+                cell.cellHistory.ForEach(previousCell => previousCell.SetActive(shouldShowCells));
             }
         }
-        if(!Camera.main.GetComponent<CameraController>().isProfile && !Camera.main.GetComponent<CameraController>().startTransition )
-        {
-            CellHistory.ForEach(cell => cell.SetActive(false));
-        }
-        if (!Camera.main.GetComponent<CameraController>().isProfile && Camera.main.GetComponent<CameraController>().startTransition)
-        {
-            CellHistory.ForEach(cell => cell.SetActive(isHistoryActive));
-        }
-
-
     }
+
+
+
+
 
 }

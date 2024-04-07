@@ -1431,8 +1431,10 @@ MonoBehaviour:
   isPause: 1
   CellHistory: []
   cubePrefab: {fileID: 6936488134860841744, guid: abfd3ec33900d3e46a861d8fe3b450f9, type: 3}
+  isHistoryActive: 0
   gridMesh: {fileID: 1728370620}
   offset: -0.025
+  historyBound: -55
 --- !u!1 &1178169789
 GameObject:
   m_ObjectHideFlags: 0
