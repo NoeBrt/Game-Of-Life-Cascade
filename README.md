@@ -12,7 +12,7 @@
 **Right Click** : 
 <BLOCKQUOTE>Kill a cell on the grid</BLOCKQUOTE>
 
-**Middle Click or Alt + Right Click** : 
+**Middle Click or Alt + Right/Left Click** : 
 <BLOCKQUOTE>Move the camera around</BLOCKQUOTE>
 
 **ScrollWheel** : 
