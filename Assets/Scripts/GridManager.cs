@@ -86,7 +86,7 @@ public class GridManager : MonoBehaviour
                 {
                     for (int y = 0; y < height; y++)
                     {
-                        Cells[x, y].UpdateCells();
+                        Cells[x, y].UpdateCell();
                         if (Cells[x, y].state == StateEnum.ALIVE)
                         {
                             if (isHistoryActive){

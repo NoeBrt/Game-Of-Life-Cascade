@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public class Cell : MonoBehaviour
 {
 
@@ -11,85 +11,128 @@ public class Cell : MonoBehaviour
 
     public GameObject cubePrefab;
     public GameObject cube;
-
-    public int count = 0;
     public StateEnum nextState = StateEnum.DEAD;
+
+    public SpriteRenderer spriteRenderer;
+    public CameraController cameraController;
+
+    public Color defaultColor = Color.white;
+    public Color mouseOverColor = new Color(1, 1, 1, 0.5f);
+
+    public Color mouseOverCubeColor = new Color(0.95f, 0.95f, 0.95f, 1f);
+
+    public int countAliveNeighbors;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
+        cameraController = Camera.main.GetComponent<CameraController>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
     }
 
     // Update is called once per frame
-    public void UpdateCells()
+    public void UpdateCell()
     {
 
 
         UpdateNeighbors();
-        ThreeNeighborRule();
+        UpdateCellState();
 
 
+    }
+    public void UpdateCubeRender()
+    {
+        if (state == StateEnum.DEAD)
+        {
+            if (cube != null)
+            {
+                Destroy(cube);
+            }
+        }
+        else if (state == StateEnum.ALIVE)
+        {
+            if (cube == null)
+            {
+                Vector3 cubePosition = new Vector3(transform.position.x, transform.position.y, 0.47f);
+                cube = Instantiate(cubePrefab, cubePosition, Quaternion.identity);
+            }
+
+            cube.SetActive(true);
+
+
+
+        }
     }
 
 
 
     private void OnMouseOver()
     {
-        // improve sprite opacity
-         if (!Camera.main.GetComponent<CameraController>().isDragging)
+        // Early return if the camera is currently dragging
+        if (CheckDrag()) return;
+
+        // Set the sprite's color to indicate mouse over, but only if not dragging
+        spriteRenderer.color = mouseOverColor;
+
+        // If the cube is associated with an ALIVE state, change its color
+        if (state == StateEnum.ALIVE && cube != null)
         {
-        GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
-
-        if (state == StateEnum.ALIVE)
-        {
-            if (cube != null)
-            {
-                cube.GetComponent<Renderer>().material.color = new Color(0.95f, 0.95f, 0.95f, 1f);
-
-
-            }
+            cube.GetComponent<Renderer>().material.color = mouseOverCubeColor;
         }
-       
-            if (Input.GetMouseButton(0))
+
+        // Handle click actions
+        OnClick();
+    }
+
+    private bool CheckDrag()
+    {
+        if (cameraController.isDragging)
+        {
+            // Reset sprite and cube colors if dragging
+            spriteRenderer.color = new Color(1, 1, 1, 0.0f); // Assuming this means "invisible" or "no change"
+            if (cube != null) // Ensure cube is not null before accessing it
             {
-                state = StateEnum.ALIVE;
+                cube.GetComponent<Renderer>().material.color = defaultColor;
             }
-            else if (Input.GetMouseButton(1))
-            {
-                state = StateEnum.DEAD;
-            }
-        }else {
-            GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
-            if (state == StateEnum.ALIVE)
-            {
-                if (cube != null)
-                {
-                    cube.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
-                }
-            }
+            return true;
+        }
+        return false;
+    }
+
+    private void OnClick()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            state = StateEnum.ALIVE;
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            state = StateEnum.DEAD;
         }
 
     }
+
+
 
 
     private void OnMouseExit()
     {
 
-        if (state == StateEnum.ALIVE)
+
+        if (cube != null)
         {
-            if (cube != null)
-            {
-                cube.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
-            }
+            cube.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
         }
+
         // reset sprite opacity
-        GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+        spriteRenderer.color = new Color(1, 1, 1, 0);
     }
     private void OnMouseEnter()
     {
-        GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+        spriteRenderer.color = new Color(1, 1, 1, 0.5f);
 
     }
 
@@ -121,57 +164,16 @@ public class Cell : MonoBehaviour
     }
 
 
-    void ThreeNeighborRule()
+    void UpdateCellState()
     {
-        Cell[,] cells = GridManager.instance.Cells;
-        count = 0;
-        foreach (Cell neighbor in neighbors)
-        {
-            if (neighbor.state == StateEnum.ALIVE)
-            {
-                count++;
-            }
-        }
-        if (count == 3 && state == StateEnum.DEAD)
-        {
-            nextState = StateEnum.ALIVE;
-        }
-
-        else if ((count == 2 || count == 3) && state == StateEnum.ALIVE)
-        {
-            nextState = StateEnum.ALIVE;
-        }
-        else
-        {
-            nextState = StateEnum.DEAD;
-        }
-
-
+        int aliveNeighborsCount = neighbors.Count(neighbor => neighbor.state == StateEnum.ALIVE);
+        nextState = (aliveNeighborsCount == 3 || (aliveNeighborsCount == 2 && state == StateEnum.ALIVE)) ? StateEnum.ALIVE : StateEnum.DEAD;
     }
-
-
     private void Update()
     {
-        if (state == StateEnum.DEAD)
-        {
-            if (cube != null)
-            {
-                Destroy(cube);
-            }
-        }
-        else if (state == StateEnum.ALIVE)
-        {
-            if (cube == null)
-            {
-                Vector3 cubePosition = new Vector3(transform.position.x, transform.position.y, 0.47f);
-                cube = Instantiate(cubePrefab, cubePosition, Quaternion.identity);
-            }
 
-            cube.SetActive(true);
+        UpdateCubeRender();
 
-
-
-        }
     }
 
 
