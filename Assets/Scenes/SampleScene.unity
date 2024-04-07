@@ -562,14 +562,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoomSpeed: 5
-  minSize: 0.1
-  maxSize: 915.2
+  minSize: 1
+  maxSize: 26
   transitionSpeed: 1
   rotationSpeed: 1
   isProfile: 1
   startTransition: 0
   handCursorTexture: {fileID: 2800000, guid: 389548cb41a402741998dc206b56f55c, type: 3}
   handCursorClosedTexture: {fileID: 2800000, guid: b890d2e3198963740b500bf97252ce10, type: 3}
+  isDragging: 0
 --- !u!114 &662365087
 MonoBehaviour:
   m_ObjectHideFlags: 0
