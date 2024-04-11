@@ -4,6 +4,12 @@
 
 ![Untitled](https://github.com/NoeBrt/Game-Of-Life-3D/assets/94910317/3752d0c9-c1a4-421e-a076-b108d0435597)
 
+## How to play ? 
+
+* Download the zipped build in the Release section
+* Extract the zipped folder 
+* Lauch GameOfLife.exe and play !
+
 ## Bindings
 
 **Left Click** : 
